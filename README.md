@@ -17,12 +17,12 @@ As there're very few files, please read JSDoc.
 `scripts/exportDynamoDBSchemas.js`
 
 ```javascript
-require("dotenv").config();
+require('dotenv').config();
 
-const { exportSchemasToFile } = require("dynamodb-schema-wizard");
+const { exportSchemasToFile } = require('dynamodb-schema-wizard');
 
 const tables = Object.entries(process.env)
-  .map(([key, value]) => (key.endsWith("_DYNAMODB_TABLE") ? value : null))
+  .map(([key, value]) => (key.endsWith('_DYNAMODB_TABLE') ? value : null))
   .filter(i => i);
 
 exportSchemasToFile(tables, `${__dirname}/../dynamodb-schema.json`);
@@ -32,11 +32,11 @@ exportSchemasToFile(tables, `${__dirname}/../dynamodb-schema.json`);
 
 ```javascript
 // eslint-disable-next-line import/no-extraneous-dependencies
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 
-if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== 'production') {
   AWS.config.update({
-    endpoint: "http://localhost:8000"
+    endpoint: 'http://localhost:8000'
   });
 }
 
@@ -46,20 +46,24 @@ module.exports = AWS;
 `setupTestEnvironment.js`
 
 ```javascript
-require("dotenv").config();
+/* eslint-disable import/no-extraneous-dependencies */
+require('dotenv').config();
+const { createTables } = require('dynamodb-schema-wizard');
+const AWS = require('./src/aws-sdk');
+const dynamodbSchema = require('./dynamodb-schema.json');
 
-const dynamodbSchema = require("../dynamodb-schema.json");
-const { createTables } = require("dynamodb-schema-wizard");
-const AWS = require("../src/aws-sdk");
+const globalSetup = async globalConfig => {
+  await createTables(new AWS.DynamoDB(), dynamodbSchema);
+};
 
-createTables(new AWS.DynamoDB(), dynamodbSchema);
+module.exports = globalSetup;
 ```
 
 `jest.config.js`
 
 ```javascript
 module.exports = {
-  globalSetup: "./setupTestEnvironment.js"
+  globalSetup: './setupTestEnvironment.js'
 };
 ```
 
