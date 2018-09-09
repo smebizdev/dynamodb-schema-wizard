@@ -8,6 +8,10 @@
   },
   "author": "SMEBiz",
   "license": "ISC",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/smebizdev/dynamodb-schema-wizard.git"
+  },
   "devDependencies": {
     "eslint": "^5.5.0",
     "eslint-config-airbnb-base": "^13.1.0",
